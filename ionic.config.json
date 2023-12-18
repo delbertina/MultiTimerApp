@@ -1,0 +1,7 @@
+{
+  "name": "multi-timer-app",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react-vite"
+}
