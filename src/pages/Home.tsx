@@ -1,6 +1,6 @@
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
-import ExploreContainer from '../components/ExploreContainer';
-import './Home.css';
+import './Home.scss';
+import TimerButton from '../components/TimerButton';
 
 const Home: React.FC = () => {
   return (
@@ -13,10 +13,12 @@ const Home: React.FC = () => {
       <IonContent fullscreen>
         <IonHeader collapse="condense">
           <IonToolbar>
-            <IonTitle size="large">Blank</IonTitle>
+            <IonTitle size="large">Multi Timer</IonTitle>
           </IonToolbar>
         </IonHeader>
-        <ExploreContainer />
+        <TimerButton />
+        <TimerButton />
+        <TimerButton />
       </IonContent>
     </IonPage>
   );
