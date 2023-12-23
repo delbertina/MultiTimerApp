@@ -1,6 +1,7 @@
-import { IonButton } from '@ionic/react';
+import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonIcon } from '@ionic/react';
 import './TimerButton.scss';
 import { useEffect, useState } from 'react';
+import { addOutline } from 'ionicons/icons';
 
 interface TimerButtonProps {
   milliseconds: number,
@@ -29,9 +30,17 @@ const TimerButton: React.FC<TimerButtonProps> = (props) => {
 
   return (
     <>
-      <IonButton fill="solid" onClick={props.clicked}>
-        {timeDisplay}
-      </IonButton>
+      <IonCard color="primary" onClick={props.clicked} button>
+        <IonCardHeader>
+          <IonCardTitle>{timeDisplay}</IonCardTitle>
+        </IonCardHeader>
+        <IonCardContent>
+          <IonButton color="success" onClick={(e: React.MouseEvent) => {console.log('inner click'); e.stopPropagation();}}>
+            <IonIcon slot="start" icon={addOutline}/>
+            30s
+          </IonButton>
+        </IonCardContent>
+      </IonCard>
     </>
   );
 };
