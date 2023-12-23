@@ -5,6 +5,7 @@ import { addOutline } from 'ionicons/icons';
 
 interface TimerButtonProps {
   milliseconds: number,
+  
   clicked: () => void
 }
 
