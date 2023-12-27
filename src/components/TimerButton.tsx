@@ -1,17 +1,25 @@
-import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonIcon } from '@ionic/react';
-import './TimerButton.scss';
-import { useEffect, useState } from 'react';
-import { addOutline } from 'ionicons/icons';
+import {
+  IonButton,
+  IonButtons,
+  IonCard,
+  IonCardContent,
+  IonCardHeader,
+  IonCardTitle,
+  IonIcon,
+  IonItem,
+} from "@ionic/react";
+import "./TimerButton.scss";
+import { useEffect, useState } from "react";
+import { addOutline } from "ionicons/icons";
 
 interface TimerButtonProps {
-  milliseconds: number,
-  
-  clicked: () => void
+  milliseconds: number;
+
+  clicked: () => void;
 }
 
 const TimerButton: React.FC<TimerButtonProps> = (props) => {
-
-  const [timeDisplay, setTimeDisplay] = useState('0');
+  const [timeDisplay, setTimeDisplay] = useState("0");
 
   // format the millisecond duration to min:sec format using pad function
   // round up to the nearest second to avoid 00:00 for less than 1 second
@@ -23,21 +31,32 @@ const TimerButton: React.FC<TimerButtonProps> = (props) => {
       ":" +
       pad(((inputRounded % 6e4) / 1000) | 0)
     );
-  }
+  };
 
   useEffect(() => {
     setTimeDisplay(millisecondsToTime(props.milliseconds));
-  }, [props.milliseconds])
+  }, [props.milliseconds]);
 
   return (
     <>
       <IonCard color="primary" onClick={props.clicked} button>
         <IonCardHeader>
-          <IonCardTitle>{timeDisplay}</IonCardTitle>
+          <IonCardTitle>
+            {timeDisplay}
+            <IonButton color="warning" className="ion-float-right">
+              <IonIcon slot="icon-only" icon={addOutline} />
+            </IonButton>
+          </IonCardTitle>
         </IonCardHeader>
         <IonCardContent>
-          <IonButton color="success" onClick={(e: React.MouseEvent) => {console.log('inner click'); e.stopPropagation();}}>
-            <IonIcon slot="start" icon={addOutline}/>
+          <IonButton
+            color="success"
+            onClick={(e: React.MouseEvent) => {
+              console.log("inner click");
+              e.stopPropagation();
+            }}
+          >
+            <IonIcon slot="start" icon={addOutline} />
             30s
           </IonButton>
         </IonCardContent>
