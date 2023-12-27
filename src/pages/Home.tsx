@@ -16,9 +16,9 @@ const Home: React.FC = () => {
             <IonTitle size="large">Multi Timer</IonTitle>
           </IonToolbar>
         </IonHeader>
-        <TimerButton milliseconds={1000} clicked={() => {console.log('10')}}/>
-        <TimerButton milliseconds={2000} clicked={() => {console.log('20')}}/>
-        <TimerButton milliseconds={3000} clicked={() => {console.log('30')}}/>
+        <TimerButton milliseconds={1000} actionButtons={[30, -45, 0, 5]} clicked={() => {console.log('10')}}/>
+        <TimerButton milliseconds={2000} actionButtons={[30]} clicked={() => {console.log('20')}}/>
+        <TimerButton milliseconds={3000} actionButtons={[30, -45, 0, 5, 30, -45, 0, 5, 30, -45, 0, 5, 30, -45, 0, 5]} clicked={() => {console.log('30')}}/>
       </IonContent>
     </IonPage>
   );
