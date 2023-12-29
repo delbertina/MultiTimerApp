@@ -4,6 +4,7 @@ import {
   IonCardContent,
   IonCardHeader,
   IonCardTitle,
+  IonCol,
   IonIcon,
   IonRow,
 } from "@ionic/react";
@@ -14,6 +15,7 @@ import { addOutline, removeOutline } from "ionicons/icons";
 interface TimerButtonProps {
   milliseconds: number;
   actionButtons: number[];
+  buttonTitle: string;
   clicked: () => void;
 }
 
@@ -43,13 +45,24 @@ const TimerButton: React.FC<TimerButtonProps> = (props) => {
 
   return (
     <>
-      <IonCard color="primary" onClick={props.clicked} button>
+      <IonCard
+        color="primary"
+        onClick={props.clicked}
+        button
+        className="timer-button-card"
+      >
         <IonCardHeader>
           <IonCardTitle>
-            {timeDisplay}
-            <IonButton color="warning" className="ion-float-right">
-              <IonIcon slot="icon-only" icon={addOutline} />
-            </IonButton>
+            <IonRow className="ion-justify-content-between ion-align-items-center">
+              <IonCol size="auto">
+                <strong>{timeDisplay}</strong> :: {props.buttonTitle}
+              </IonCol>
+              <IonCol size="auto">
+                <IonButton color="warning">
+                  <IonIcon slot="icon-only" icon={addOutline} />
+                </IonButton>
+              </IonCol>
+            </IonRow>
           </IonCardTitle>
         </IonCardHeader>
         <IonCardContent>
@@ -60,7 +73,10 @@ const TimerButton: React.FC<TimerButtonProps> = (props) => {
                 color={button >= 0 ? "success" : "danger"}
                 onClick={(e: React.MouseEvent) => handleCardAction(e, index)}
               >
-                <IonIcon slot="start" icon={button >=0 ? addOutline : removeOutline} />
+                <IonIcon
+                  slot="start"
+                  icon={button >= 0 ? addOutline : removeOutline}
+                />
                 {(button >= 0 ? button : 0 - button) + "s"}
               </IonButton>
             ))}

@@ -1,0 +1,12 @@
+.timer-button-card {
+    ion-card-title {
+        ion-row {
+            ion-col:first-of-type {
+                flex: 1 0 0px !important;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+        }
+    }
+}
