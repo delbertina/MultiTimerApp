@@ -12,7 +12,7 @@ import "./TimerButton.scss";
 import { useEffect, useState } from "react";
 import { addOutline, removeOutline } from "ionicons/icons";
 
-interface TimerButtonProps {
+export interface TimerButtonProps {
   milliseconds: number;
   actionButtons: number[];
   buttonTitle: string;

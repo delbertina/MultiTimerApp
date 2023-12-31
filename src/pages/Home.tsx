@@ -11,50 +11,56 @@ import {
 import "./Home.scss";
 import TimerButton from "../components/TimerButton";
 import { addOutline, trashOutline } from "ionicons/icons";
+import { useState } from "react";
+import { TimerButtonData } from "../types/TimerButton";
 
 const Home: React.FC = () => {
+  const [timerButtons, setTimerButtons] = useState<TimerButtonData[]>([
+    {
+      milliseconds: 1000,
+      buttonTitle: "Red Team",
+      actionButtons: [30, -45, 0, 5],
+    },
+    {
+      milliseconds: 2000,
+      buttonTitle: "Blue Team",
+      actionButtons: [30],
+    },
+    {
+      milliseconds: 3000,
+      buttonTitle: "Yellow Team really long title that is long",
+      actionButtons: [
+        30, -45, 0, 5, 30, -45, 0, 5, 30, -45, 0, 5, 30, -45, 0, 5,
+      ],
+    },
+  ]);
+
   return (
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Multi Timer 2</IonTitle>
+          <IonTitle>Multi Timer</IonTitle>
           <IonButtons slot="end" className="ion-padding-end">
-          <IonButton color="danger">
+            <IonButton color="danger">
               <IonIcon slot="icon-only" icon={trashOutline} />
             </IonButton>
             <IonButton color="success" fill="solid">
               <IonIcon slot="icon-only" icon={addOutline} />
             </IonButton>
-            </IonButtons>
+          </IonButtons>
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        <TimerButton
-          milliseconds={1000}
-          buttonTitle="Red Team"
-          actionButtons={[30, -45, 0, 5]}
+        {timerButtons.map((item, index) => (
+          <TimerButton key={index}
+          milliseconds={item.milliseconds}
+          buttonTitle={item.buttonTitle}
+          actionButtons={item.actionButtons}
           clicked={() => {
-            console.log("10");
+            console.log("button clicked of index: " , index);
           }}
-        />
-        <TimerButton
-          milliseconds={2000}
-          buttonTitle="Blue Team"
-          actionButtons={[30]}
-          clicked={() => {
-            console.log("20");
-          }}
-        />
-        <TimerButton
-          milliseconds={3000}
-          buttonTitle="Yellow Team really long title that is long"
-          actionButtons={[
-            30, -45, 0, 5, 30, -45, 0, 5, 30, -45, 0, 5, 30, -45, 0, 5,
-          ]}
-          clicked={() => {
-            console.log("30");
-          }}
-        />
+          />
+        ))}
       </IonContent>
     </IonPage>
   );
