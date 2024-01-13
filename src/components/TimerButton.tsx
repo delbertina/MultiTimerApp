@@ -10,13 +10,15 @@ import {
 } from "@ionic/react";
 import "./TimerButton.scss";
 import { useEffect, useState } from "react";
-import { addOutline, removeOutline } from "ionicons/icons";
+import { addOutline, removeOutline, settingsOutline } from "ionicons/icons";
 
 export interface TimerButtonProps {
   milliseconds: number;
   actionButtons: number[];
   buttonTitle: string;
-  clicked: () => void;
+  clickedMain: () => void;
+  clickedSettings: () => void;
+  clickedAdd: (value: number) => void;
 }
 
 const TimerButton: React.FC<TimerButtonProps> = (props) => {
@@ -47,7 +49,7 @@ const TimerButton: React.FC<TimerButtonProps> = (props) => {
     <>
       <IonCard
         color="primary"
-        onClick={props.clicked}
+        onClick={props.clickedMain}
         button
         className="timer-button-card"
       >
@@ -58,8 +60,8 @@ const TimerButton: React.FC<TimerButtonProps> = (props) => {
                 <strong>{timeDisplay}</strong> :: {props.buttonTitle}
               </IonCol>
               <IonCol size="auto">
-                <IonButton color="warning">
-                  <IonIcon slot="icon-only" icon={addOutline} />
+                <IonButton color="warning" fill="solid">
+                  <IonIcon slot="icon-only" icon={settingsOutline} />
                 </IonButton>
               </IonCol>
             </IonRow>

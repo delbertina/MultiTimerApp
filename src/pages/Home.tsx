@@ -56,8 +56,14 @@ const Home: React.FC = () => {
           milliseconds={item.milliseconds}
           buttonTitle={item.buttonTitle}
           actionButtons={item.actionButtons}
-          clicked={() => {
-            console.log("button clicked of index: " , index);
+          clickedMain={() => {
+            console.log("button main clicked of index: " , index);
+          }}
+          clickedSettings={() => {
+            console.log("button settings clicked of index: " , index);
+          }}
+          clickedAdd={(value: number) => {
+            console.log("button add clicked of index: " , index, " with value ", value);
           }}
           />
         ))}
