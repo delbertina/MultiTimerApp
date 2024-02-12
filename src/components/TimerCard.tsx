@@ -8,12 +8,12 @@ import {
   IonIcon,
   IonRow,
 } from "@ionic/react";
-import "./TimerButton.scss";
-import { useEffect, useState } from "react";
+import "./TimerCard.scss";
+import { useState } from "react";
 import { addOutline, removeOutline, settingsOutline } from "ionicons/icons";
+import { useTimer } from "react-timer-hook";
 
-export interface TimerButtonProps {
-  milliseconds: number;
+export interface TimerCardProps {
   actionButtons: number[];
   buttonTitle: string;
   clickedMain: () => void;
@@ -21,43 +21,58 @@ export interface TimerButtonProps {
   clickedAdd: (value: number) => void;
 }
 
-const TimerButton: React.FC<TimerButtonProps> = (props) => {
-  const [timeDisplay, setTimeDisplay] = useState("0");
+const TimerCard: React.FC<TimerCardProps> = (props) => {
+  const [isExpired, setIsExpired] = useState<boolean>(false);
 
-  // format the millisecond duration to min:sec format using pad function
-  // round up to the nearest second to avoid 00:00 for less than 1 second
-  const millisecondsToTime = (millis: number): string => {
-    const inputRounded = Math.ceil(millis / 1000) * 1000;
-    const pad = (n: number, z = 2) => ("00" + n).slice(-z);
-    return (
-      pad(((inputRounded % 3.6e6) / 6e4) | 0) +
-      ":" +
-      pad(((inputRounded % 6e4) / 1000) | 0)
-    );
+  const {
+    totalSeconds,
+    seconds,
+    minutes,
+    isRunning,
+    start,
+    pause,
+    resume,
+    restart,
+  } = useTimer({
+    expiryTimestamp: new Date(Date.now().valueOf() + 30000),
+    autoStart: false,
+    onExpire: () => setIsExpired(true),
+  });
+
+  const handleCardClick = () => {
+    if (!isExpired) {
+      if (isRunning) {
+        pause();
+      } else {
+        resume();
+      }
+    }
   };
 
-  useEffect(() => {
-    setTimeDisplay(millisecondsToTime(props.milliseconds));
-  }, [props.milliseconds]);
-
   const handleCardAction = (e: React.MouseEvent, id: number): void => {
-    console.log("inner click ", id);
+    const time = new Date();
+    time.setSeconds(time.getSeconds() + totalSeconds + props.actionButtons[id]);
+    restart(time, !!isRunning);
     e.stopPropagation();
   };
 
   return (
     <>
       <IonCard
-        color="primary"
-        onClick={props.clickedMain}
+        color={isExpired ? "medium" : isRunning ? "secondary" : "primary"}
+        onClick={handleCardClick}
         button
-        className="timer-button-card"
+        className="timer-card"
       >
         <IonCardHeader>
           <IonCardTitle>
             <IonRow className="ion-justify-content-between ion-align-items-center">
               <IonCol size="auto">
-                <strong>{timeDisplay}</strong> :: {props.buttonTitle}
+                <strong>
+                  <span>{("00" + minutes).slice(-2)}</span>:
+                  <span>{("00" + seconds).slice(-2)}</span>
+                </strong>{" "}
+                :: {props.buttonTitle}
               </IonCol>
               <IonCol size="auto">
                 <IonButton color="warning" fill="solid">
@@ -89,4 +104,4 @@ const TimerButton: React.FC<TimerButtonProps> = (props) => {
   );
 };
 
-export default TimerButton;
+export default TimerCard;

@@ -9,13 +9,13 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import "./Home.scss";
-import TimerButton from "../components/TimerButton";
+import TimerCard from "../components/TimerCard";
 import { addOutline, trashOutline } from "ionicons/icons";
 import { useState } from "react";
-import { TimerButtonData } from "../types/TimerButton";
+import { TimerCardData } from "../types/TimerCard";
 
 const Home: React.FC = () => {
-  const [timerButtons, setTimerButtons] = useState<TimerButtonData[]>([
+  const [timerButtons, setTimerButtons] = useState<TimerCardData[]>([
     {
       milliseconds: 1000,
       buttonTitle: "Red Team",
@@ -52,8 +52,8 @@ const Home: React.FC = () => {
       </IonHeader>
       <IonContent fullscreen>
         {timerButtons.map((item, index) => (
-          <TimerButton key={index}
-          milliseconds={item.milliseconds}
+          <TimerCard key={index}
+          // milliseconds={item.milliseconds}
           buttonTitle={item.buttonTitle}
           actionButtons={item.actionButtons}
           clickedMain={() => {
