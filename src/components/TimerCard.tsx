@@ -1,19 +1,29 @@
 import {
   IonButton,
+  IonButtons,
   IonCard,
   IonCardContent,
   IonCardHeader,
   IonCardTitle,
   IonCol,
+  IonContent,
+  IonHeader,
   IonIcon,
+  IonInput,
+  IonItem,
+  IonModal,
   IonRow,
+  IonTitle,
+  IonToolbar,
 } from "@ionic/react";
 import "./TimerCard.scss";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { addOutline, removeOutline, settingsOutline } from "ionicons/icons";
 import { useTimer } from "react-timer-hook";
+import { OverlayEventDetail } from "@ionic/core";
 
 export interface TimerCardProps {
+  id: number;
   actionButtons: number[];
   buttonTitle: string;
   clickedMain: () => void;
@@ -23,6 +33,7 @@ export interface TimerCardProps {
 
 const TimerCard: React.FC<TimerCardProps> = (props) => {
   const [isExpired, setIsExpired] = useState<boolean>(false);
+  const modal = useRef<HTMLIonModalElement>(null);
 
   const {
     totalSeconds,
@@ -56,6 +67,22 @@ const TimerCard: React.FC<TimerCardProps> = (props) => {
     e.stopPropagation();
   };
 
+  const confirmSaveModal = (e: React.MouseEvent) => {
+    modal.current?.dismiss(1, "confirm");
+    e.stopPropagation();
+  };
+
+  const cancelSaveModal = (e: React.MouseEvent) => {
+    modal.current?.dismiss();
+    e.stopPropagation();
+  };
+
+  const onWillDismiss = (ev: CustomEvent<OverlayEventDetail>) => {
+    if (ev.detail.role === "confirm") {
+      console.log(`Hello, ${ev.detail.data}!`);
+    }
+  };
+
   return (
     <>
       <IonCard
@@ -75,7 +102,12 @@ const TimerCard: React.FC<TimerCardProps> = (props) => {
                 :: {props.buttonTitle}
               </IonCol>
               <IonCol size="auto">
-                <IonButton color="warning" fill="solid">
+                <IonButton
+                  color="warning"
+                  fill="solid"
+                  id={"open-modal" + props.id}
+                  onClick={(e: React.MouseEvent) => e.stopPropagation()}
+                >
                   <IonIcon slot="icon-only" icon={settingsOutline} />
                 </IonButton>
               </IonCol>
@@ -100,6 +132,35 @@ const TimerCard: React.FC<TimerCardProps> = (props) => {
           </IonRow>
         </IonCardContent>
       </IonCard>
+      <IonModal
+        ref={modal}
+        trigger={"open-modal" + props.id}
+        onWillDismiss={(ev) => onWillDismiss(ev)}
+      >
+        <IonHeader>
+          <IonToolbar>
+            <IonButtons slot="start">
+              <IonButton onClick={(e: React.MouseEvent) => cancelSaveModal(e)}>
+                Cancel
+              </IonButton>
+            </IonButtons>
+            <IonTitle>Welcome</IonTitle>
+            <IonButtons slot="end">
+              <IonButton
+                strong={true}
+                onClick={(e: React.MouseEvent) => confirmSaveModal(e)}
+              >
+                Confirm
+              </IonButton>
+            </IonButtons>
+          </IonToolbar>
+        </IonHeader>
+        <IonContent className="ion-padding">
+          {props.actionButtons.map((item, index) => (
+            <IonItem key={index}>{item}</IonItem>
+          ))}
+        </IonContent>
+      </IonModal>
     </>
   );
 };

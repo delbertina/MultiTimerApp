@@ -53,7 +53,7 @@ const Home: React.FC = () => {
       <IonContent fullscreen>
         {timerButtons.map((item, index) => (
           <TimerCard key={index}
-          // milliseconds={item.milliseconds}
+          id={index}
           buttonTitle={item.buttonTitle}
           actionButtons={item.actionButtons}
           clickedMain={() => {
