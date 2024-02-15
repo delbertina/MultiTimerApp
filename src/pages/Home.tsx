@@ -35,6 +35,15 @@ const Home: React.FC = () => {
     },
   ]);
 
+  const handleUpdateActionButtons = (
+    index: number,
+    buttons: number[]
+  ): void => {
+    const tempButtons = [...timerButtons];
+    tempButtons[index].actionButtons = buttons;
+    setTimerButtons(tempButtons);
+  };
+
   return (
     <IonPage>
       <IonHeader>
@@ -52,19 +61,14 @@ const Home: React.FC = () => {
       </IonHeader>
       <IonContent fullscreen>
         {timerButtons.map((item, index) => (
-          <TimerCard key={index}
-          id={index}
-          buttonTitle={item.buttonTitle}
-          actionButtons={item.actionButtons}
-          clickedMain={() => {
-            console.log("button main clicked of index: " , index);
-          }}
-          clickedSettings={() => {
-            console.log("button settings clicked of index: " , index);
-          }}
-          clickedAdd={(value: number) => {
-            console.log("button add clicked of index: " , index, " with value ", value);
-          }}
+          <TimerCard
+            key={index}
+            id={index}
+            buttonTitle={item.buttonTitle}
+            actionButtons={item.actionButtons}
+            updateActionButtons={(buttons: number[]) =>
+              handleUpdateActionButtons(index, buttons)
+            }
           />
         ))}
       </IonContent>
