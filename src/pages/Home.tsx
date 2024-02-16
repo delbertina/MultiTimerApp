@@ -9,7 +9,7 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import "./Home.scss";
-import TimerCard from "../components/TimerCard";
+import TimerCard from "../components/TimerCard/TimerCard";
 import { addOutline, trashOutline } from "ionicons/icons";
 import { useState } from "react";
 import { TimerCardData } from "../types/TimerCard";

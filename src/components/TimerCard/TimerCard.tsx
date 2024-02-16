@@ -21,6 +21,7 @@ import {
   IonTitle,
   IonToolbar,
   ItemReorderEventDetail,
+  useIonModal,
 } from "@ionic/react";
 import "./TimerCard.scss";
 import { useRef, useState } from "react";
@@ -32,6 +33,7 @@ import {
 } from "ionicons/icons";
 import { useTimer } from "react-timer-hook";
 import { OverlayEventDetail } from "@ionic/core";
+import TimerCardAddActionModal from "../TimerCardAddActionModal/TimerCardAddActionModal";
 
 export interface TimerCardProps {
   id: number;
@@ -46,6 +48,9 @@ const TimerCard: React.FC<TimerCardProps> = (props) => {
   const [tempActionButtons, setTempActionButtons] = useState<Array<number>>([
     ...props.actionButtons,
   ]);
+  const [presentAdd, dismissAdd] = useIonModal(TimerCardAddActionModal, {
+    onDismiss: (data: string, role: string) => dismissAdd(data, role)
+  });
 
   const {
     totalSeconds,
@@ -107,9 +112,15 @@ const TimerCard: React.FC<TimerCardProps> = (props) => {
     return returnVal;
   };
 
-  const handleActionAdd = (value: string): void => {
-    setTempActionButtons([...tempActionButtons, parseActionValue(value)]);
-  };
+  const openAddModal = () => {
+    presentAdd({
+      onWillDismiss: (ev: CustomEvent<OverlayEventDetail>) => {
+        if (ev.detail.role === 'confirm') {
+          setTempActionButtons([...tempActionButtons, parseActionValue(ev.detail.data)]);
+        }
+      },
+    });
+  }
 
   const handleActionRemove = (index: number): void => {
     setTempActionButtons(tempActionButtons.splice(index, 1));
@@ -262,33 +273,12 @@ const TimerCard: React.FC<TimerCardProps> = (props) => {
               color="success"
               fill="solid"
               expand="block"
-              id={"present-time-card-add-modal-alert" + props.id}
+              onClick={() => {openAddModal(); console.log("open");}}
             >
               Add Quick Action
             </IonButton>
           </IonToolbar>
         </IonFooter>
-        <IonAlert
-          trigger={"present-time-card-add-modal-alert" + props.id}
-          header="Please enter a value for the new action button"
-          buttons={[
-            {
-              text: "OK",
-              handler: (data: { value: string }) => {
-                handleActionAdd(data.value);
-              },
-            },
-          ]}
-          inputs={[
-            {
-              name: "value",
-              type: "number",
-              placeholder: "30",
-              min: -300,
-              max: 300,
-            },
-          ]}
-        ></IonAlert>
       </IonModal>
     </>
   );
