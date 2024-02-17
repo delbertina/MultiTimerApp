@@ -13,12 +13,6 @@ import {
 import { closeOutline } from "ionicons/icons";
 import { useRef } from "react";
 
-export interface TimerCardAddActionModalProps {
-  defaultValue: number;
-  isOpen: boolean;
-  submitModal: (value?: string) => void;
-}
-
 const TimerCardAddActionModal = ({
   onDismiss,
 }: {
@@ -58,7 +52,6 @@ const TimerCardAddActionModal = ({
             color="success"
             fill="solid"
             expand="block"
-            form="timer-card-add-action-form"
             onClick={() => onDismiss(inputRef.current?.value, "confirm")}
           >
             Submit

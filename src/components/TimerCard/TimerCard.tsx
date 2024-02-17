@@ -1,5 +1,4 @@
 import {
-  IonAlert,
   IonButton,
   IonButtons,
   IonCard,
@@ -34,6 +33,7 @@ import {
 import { useTimer } from "react-timer-hook";
 import { OverlayEventDetail } from "@ionic/core";
 import TimerCardAddActionModal from "../TimerCardAddActionModal/TimerCardAddActionModal";
+import TimerCardEditActionModal from "../TimerCardEditActionModal/TimerCardEditActionModal";
 
 export interface TimerCardProps {
   id: number;
@@ -48,8 +48,13 @@ const TimerCard: React.FC<TimerCardProps> = (props) => {
   const [tempActionButtons, setTempActionButtons] = useState<Array<number>>([
     ...props.actionButtons,
   ]);
+  const [currentEditIndex, setCurrentEditIndex] = useState<number>(-1);
   const [presentAdd, dismissAdd] = useIonModal(TimerCardAddActionModal, {
     onDismiss: (data: string, role: string) => dismissAdd(data, role)
+  });
+  const [presentEdit, dismissEdit] = useIonModal(TimerCardEditActionModal, {
+    defaultValue: currentEditIndex !== -1 ? tempActionButtons[currentEditIndex] : 0,
+    onDismiss: (data: string, role: string) => dismissEdit(data, role)
   });
 
   const {
@@ -104,7 +109,6 @@ const TimerCard: React.FC<TimerCardProps> = (props) => {
 
   const parseActionValue = (value: string): number => {
     let returnVal = parseInt(value);
-    console.log("parse val", value, returnVal);
     if (isNaN(returnVal) || returnVal < -300 || returnVal > 300) {
       // If input is not a number or is out of range, change returnVal to 0
       returnVal = 0;
@@ -122,6 +126,20 @@ const TimerCard: React.FC<TimerCardProps> = (props) => {
     });
   }
 
+  const openEditModal = (index: number) => {
+    setCurrentEditIndex(index);
+    presentEdit({
+      onWillDismiss: (ev: CustomEvent<OverlayEventDetail>) => {
+        if (ev.detail.role === 'confirm') {
+          const tempVal = [...tempActionButtons];
+          tempVal[index] = parseActionValue(ev.detail.data);
+          setTempActionButtons(tempVal);
+        }
+        setCurrentEditIndex(-1);
+      },
+    });
+  }
+
   const handleActionRemove = (index: number): void => {
     setTempActionButtons(tempActionButtons.splice(index, 1));
   };
@@ -130,13 +148,6 @@ const TimerCard: React.FC<TimerCardProps> = (props) => {
     event: CustomEvent<ItemReorderEventDetail>
   ): void => {
     setTempActionButtons(event.detail.complete(tempActionButtons));
-  };
-
-  const handleActionEdit = (index: number, value: string): void => {
-    const tempVal = [...tempActionButtons];
-    tempVal[index] === parseActionValue(value);
-    console.log(index, value, tempVal[index]);
-    setTempActionButtons(tempVal);
   };
 
   return (
@@ -234,33 +245,11 @@ const TimerCard: React.FC<TimerCardProps> = (props) => {
                   </IonButtons>
                   <IonLabel
                     className="timer-card-modal-item-label"
-                    id={"present-time-card-modal-alert" + props.id + index}
+                    onClick={() => openEditModal(index)}
                   >
                     {item} {item === 1 ? "second" : "seconds"}
                   </IonLabel>
                   <IonReorder slot="end"></IonReorder>
-                  <IonAlert
-                    key={index}
-                    trigger={"present-time-card-modal-alert" + props.id + index}
-                    header="Please update the quick action value"
-                    buttons={[
-                      {
-                        text: "OK",
-                        handler: (data: { value: string }) => {
-                          handleActionEdit(index, data.value);
-                        },
-                      },
-                    ]}
-                    inputs={[
-                      {
-                        name: "value",
-                        type: "number",
-                        placeholder: item.toString(),
-                        min: -300,
-                        max: 300,
-                      },
-                    ]}
-                  ></IonAlert>
                 </IonItem>
               ))}
             </IonReorderGroup>
@@ -273,7 +262,7 @@ const TimerCard: React.FC<TimerCardProps> = (props) => {
               color="success"
               fill="solid"
               expand="block"
-              onClick={() => {openAddModal(); console.log("open");}}
+              onClick={() => openAddModal()}
             >
               Add Quick Action
             </IonButton>
