@@ -12,6 +12,7 @@ import {
 } from "@ionic/react";
 import { closeOutline } from "ionicons/icons";
 import { useRef } from "react";
+import { MODAL_SAVE_ROLE } from "../../data/constants";
 
 const TimerCardAddActionModal = ({
   onDismiss,
@@ -52,7 +53,7 @@ const TimerCardAddActionModal = ({
             color="success"
             fill="solid"
             expand="block"
-            onClick={() => onDismiss(inputRef.current?.value, "confirm")}
+            onClick={() => onDismiss(inputRef.current?.value, MODAL_SAVE_ROLE)}
           >
             Submit
           </IonButton>

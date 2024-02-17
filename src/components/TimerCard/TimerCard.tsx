@@ -1,39 +1,25 @@
 import {
   IonButton,
-  IonButtons,
   IonCard,
   IonCardContent,
   IonCardHeader,
   IonCardTitle,
   IonCol,
-  IonContent,
-  IonFooter,
-  IonHeader,
   IonIcon,
-  IonItem,
-  IonLabel,
-  IonList,
-  IonModal,
-  IonReorder,
-  IonReorderGroup,
   IonRow,
-  IonTitle,
-  IonToolbar,
-  ItemReorderEventDetail,
   useIonModal,
 } from "@ionic/react";
 import "./TimerCard.scss";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import {
   addOutline,
-  closeOutline,
   removeOutline,
   settingsOutline,
 } from "ionicons/icons";
 import { useTimer } from "react-timer-hook";
-import { OverlayEventDetail } from "@ionic/core";
-import TimerCardAddActionModal from "../TimerCardAddActionModal/TimerCardAddActionModal";
-import TimerCardEditActionModal from "../TimerCardEditActionModal/TimerCardEditActionModal";
+import TimerCardEditModal from "../TimerCardEditModal/TimerCardEditModal";
+import { OverlayEventDetail } from "@ionic/react/dist/types/components/react-component-lib/interfaces";
+import { MODAL_SAVE_ROLE } from "../../data/constants";
 
 export interface TimerCardProps {
   id: number;
@@ -43,18 +29,11 @@ export interface TimerCardProps {
 }
 
 const TimerCard: React.FC<TimerCardProps> = (props) => {
-  const [isExpired, setIsExpired] = useState<boolean>(false);
-  const modal = useRef<HTMLIonModalElement>(null);
-  const [tempActionButtons, setTempActionButtons] = useState<Array<number>>([
-    ...props.actionButtons,
-  ]);
-  const [currentEditIndex, setCurrentEditIndex] = useState<number>(-1);
-  const [presentAdd, dismissAdd] = useIonModal(TimerCardAddActionModal, {
-    onDismiss: (data: string, role: string) => dismissAdd(data, role)
-  });
-  const [presentEdit, dismissEdit] = useIonModal(TimerCardEditActionModal, {
-    defaultValue: currentEditIndex !== -1 ? tempActionButtons[currentEditIndex] : 0,
-    onDismiss: (data: string, role: string) => dismissEdit(data, role)
+  const [isExpired, setIsExpired] = useState<boolean>(false);  
+  const [presentEdit, dismissEdit] = useIonModal(TimerCardEditModal, {
+    buttonTitle: props.buttonTitle,
+    actionButtons: props.actionButtons,
+    onDismiss: (data: string, role: string) => dismissEdit(data, role),
   });
 
   const {
@@ -89,65 +68,15 @@ const TimerCard: React.FC<TimerCardProps> = (props) => {
     e.stopPropagation();
   };
 
-  const confirmSaveModal = (e: React.MouseEvent): void => {
-    modal.current?.dismiss(tempActionButtons, "save");
+  const openEditModal = (e: React.MouseEvent) => {
     e.stopPropagation();
-  };
-
-  const cancelSaveModal = (e: React.MouseEvent): void => {
-    modal.current?.dismiss();
-    e.stopPropagation();
-  };
-
-  const onWillDismiss = (ev: CustomEvent<OverlayEventDetail>): void => {
-    if (ev.detail.role === "save") {
-      props.updateActionButtons(tempActionButtons);
-    } else {
-      setTempActionButtons(props.actionButtons);
-    }
-  };
-
-  const parseActionValue = (value: string): number => {
-    let returnVal = parseInt(value);
-    if (isNaN(returnVal) || returnVal < -300 || returnVal > 300) {
-      // If input is not a number or is out of range, change returnVal to 0
-      returnVal = 0;
-    }
-    return returnVal;
-  };
-
-  const openAddModal = () => {
-    presentAdd({
-      onWillDismiss: (ev: CustomEvent<OverlayEventDetail>) => {
-        if (ev.detail.role === 'confirm') {
-          setTempActionButtons([...tempActionButtons, parseActionValue(ev.detail.data)]);
-        }
-      },
-    });
-  }
-
-  const openEditModal = (index: number) => {
-    setCurrentEditIndex(index);
     presentEdit({
       onWillDismiss: (ev: CustomEvent<OverlayEventDetail>) => {
-        if (ev.detail.role === 'confirm') {
-          const tempVal = [...tempActionButtons];
-          tempVal[index] = parseActionValue(ev.detail.data);
-          setTempActionButtons(tempVal);
+        if (ev.detail.role === MODAL_SAVE_ROLE) {
+          props.updateActionButtons(ev.detail.data);
         }
-        setCurrentEditIndex(-1);
       },
     });
-  }
-
-  const handleActionRemove = (index: number): void => {
-    setTempActionButtons(tempActionButtons.splice(index, 1));
-  };
-
-  const handleActionReorder = (
-    event: CustomEvent<ItemReorderEventDetail>
-  ): void => {
-    setTempActionButtons(event.detail.complete(tempActionButtons));
   };
 
   return (
@@ -173,7 +102,7 @@ const TimerCard: React.FC<TimerCardProps> = (props) => {
                   color="warning"
                   fill="solid"
                   id={"open-timer-card-modal" + props.id}
-                  onClick={(e: React.MouseEvent) => e.stopPropagation()}
+                  onClick={(e: React.MouseEvent) => openEditModal(e)}
                 >
                   <IonIcon slot="icon-only" icon={settingsOutline} />
                 </IonButton>
@@ -199,76 +128,6 @@ const TimerCard: React.FC<TimerCardProps> = (props) => {
           </IonRow>
         </IonCardContent>
       </IonCard>
-      <IonModal
-        ref={modal}
-        className="timer-card-modal"
-        trigger={"open-timer-card-modal" + props.id}
-        onWillDismiss={(ev) => onWillDismiss(ev)}
-      >
-        <IonHeader>
-          <IonToolbar>
-            <IonTitle>
-              <strong>Edit Quick Add</strong> :: {props.buttonTitle}
-            </IonTitle>
-            <IonButtons slot="end">
-              <IonButton
-                strong={true}
-                color="success"
-                fill="solid"
-                onClick={(e: React.MouseEvent) => confirmSaveModal(e)}
-              >
-                Save
-              </IonButton>
-              <IonButton onClick={(e: React.MouseEvent) => cancelSaveModal(e)}>
-                <IonIcon color="danger" icon={closeOutline} />
-              </IonButton>
-            </IonButtons>
-          </IonToolbar>
-        </IonHeader>
-        <IonContent className="ion-padding">
-          <IonList>
-            <IonReorderGroup
-              disabled={false}
-              onIonItemReorder={(e) => handleActionReorder(e)}
-              key={0}
-            >
-              {tempActionButtons.map((item, index) => (
-                <IonItem key={index}>
-                  <IonButtons slot="start">
-                    <IonButton
-                      fill="solid"
-                      color="danger"
-                      onClick={() => handleActionRemove(index)}
-                    >
-                      <IonIcon icon={closeOutline} />
-                    </IonButton>
-                  </IonButtons>
-                  <IonLabel
-                    className="timer-card-modal-item-label"
-                    onClick={() => openEditModal(index)}
-                  >
-                    {item} {item === 1 ? "second" : "seconds"}
-                  </IonLabel>
-                  <IonReorder slot="end"></IonReorder>
-                </IonItem>
-              ))}
-            </IonReorderGroup>
-          </IonList>
-        </IonContent>
-        <IonFooter className="timer-card-modal-footer">
-          <IonToolbar>
-            <IonButton
-              strong={true}
-              color="success"
-              fill="solid"
-              expand="block"
-              onClick={() => openAddModal()}
-            >
-              Add Quick Action
-            </IonButton>
-          </IonToolbar>
-        </IonFooter>
-      </IonModal>
     </>
   );
 };
