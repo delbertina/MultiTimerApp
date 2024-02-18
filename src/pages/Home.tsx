@@ -13,6 +13,7 @@ import TimerCard from "../components/TimerCard/TimerCard";
 import { addOutline, trashOutline } from "ionicons/icons";
 import { useState } from "react";
 import { TimerCardData } from "../types/TimerCard";
+import { NEW_TIMER_CARD } from "../data/constants";
 
 const Home: React.FC = () => {
   const [timerButtons, setTimerButtons] = useState<TimerCardData[]>([
@@ -35,6 +36,10 @@ const Home: React.FC = () => {
     },
   ]);
 
+  const handleAddCard = (): void => {
+    setTimerButtons([...timerButtons, NEW_TIMER_CARD]);
+  }
+
   const handleUpdateActionButtons = (
     index: number,
     buttons: number[]
@@ -53,7 +58,7 @@ const Home: React.FC = () => {
             <IonButton color="danger">
               <IonIcon slot="icon-only" icon={trashOutline} />
             </IonButton>
-            <IonButton color="success" fill="solid">
+            <IonButton color="success" fill="solid" onClick={() => handleAddCard()}>
               <IonIcon slot="icon-only" icon={addOutline} />
             </IonButton>
           </IonButtons>
