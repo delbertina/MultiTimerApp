@@ -16,6 +16,7 @@ import { TimerCardData } from "../types/TimerCard";
 import { NEW_TIMER_CARD } from "../data/constants";
 
 const Home: React.FC = () => {
+  const [isDeleteState, setIsDeleteState] = useState<boolean>(false);
   const [timerButtons, setTimerButtons] = useState<TimerCardData[]>([
     {
       milliseconds: 1000,
@@ -38,7 +39,11 @@ const Home: React.FC = () => {
 
   const handleAddCard = (): void => {
     setTimerButtons([...timerButtons, NEW_TIMER_CARD]);
-  }
+  };
+
+  const handleToggleDeleteMode = (): void => {
+    setIsDeleteState(!isDeleteState);
+  };
 
   const handleUpdateActionButtons = (
     index: number,
@@ -49,16 +54,31 @@ const Home: React.FC = () => {
     setTimerButtons(tempButtons);
   };
 
+  const handleDeleteCard = (index: number): void => {
+    const tempButtons = timerButtons;
+    tempButtons.splice(index, 1)
+    setTimerButtons([...tempButtons]);
+  }
+
   return (
     <IonPage>
       <IonHeader>
         <IonToolbar>
           <IonTitle>Multi Timer</IonTitle>
           <IonButtons slot="end" className="ion-padding-end">
-            <IonButton color="danger">
+            <IonButton
+              color="danger"
+              fill={isDeleteState ? "solid" : "clear"}
+              onClick={() => handleToggleDeleteMode()}
+            >
               <IonIcon slot="icon-only" icon={trashOutline} />
             </IonButton>
-            <IonButton color="success" fill="solid" onClick={() => handleAddCard()}>
+            <IonButton
+              color="success"
+              disabled={isDeleteState ? true : false}
+              fill={isDeleteState ? "clear" : "solid"}
+              onClick={() => handleAddCard()}
+            >
               <IonIcon slot="icon-only" icon={addOutline} />
             </IonButton>
           </IonButtons>
@@ -74,6 +94,8 @@ const Home: React.FC = () => {
             updateActionButtons={(buttons: number[]) =>
               handleUpdateActionButtons(index, buttons)
             }
+            isDeleting={isDeleteState}
+            deleteCard={() => handleDeleteCard(index)}
           />
         ))}
       </IonContent>

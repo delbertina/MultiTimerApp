@@ -88,7 +88,9 @@ const TimerCardEditModal: React.FC<TimerCardEditProps> = (props) => {
   };
 
   const handleActionRemove = (index: number): void => {
-    setTempActionButtons(tempActionButtons.splice(index, 1));
+    const tempButtons = tempActionButtons;
+    tempButtons.splice(index, 1)
+    setTempActionButtons([...tempButtons]);
   };
 
   const handleActionReorder = (

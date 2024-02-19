@@ -11,11 +11,7 @@ import {
 } from "@ionic/react";
 import "./TimerCard.scss";
 import { useState } from "react";
-import {
-  addOutline,
-  removeOutline,
-  settingsOutline,
-} from "ionicons/icons";
+import { addOutline, removeOutline, settingsOutline } from "ionicons/icons";
 import { useTimer } from "react-timer-hook";
 import TimerCardEditModal from "../TimerCardEditModal/TimerCardEditModal";
 import { OverlayEventDetail } from "@ionic/react/dist/types/components/react-component-lib/interfaces";
@@ -23,13 +19,15 @@ import { MODAL_SAVE_ROLE } from "../../data/constants";
 
 export interface TimerCardProps {
   id: number;
-  actionButtons: number[];
   buttonTitle: string;
+  actionButtons: number[];
   updateActionButtons: (buttons: number[]) => void;
+  isDeleting: boolean;
+  deleteCard: () => void;
 }
 
 const TimerCard: React.FC<TimerCardProps> = (props) => {
-  const [isExpired, setIsExpired] = useState<boolean>(false);  
+  const [isExpired, setIsExpired] = useState<boolean>(false);
   const [presentEdit, dismissEdit] = useIonModal(TimerCardEditModal, {
     buttonTitle: props.buttonTitle,
     actionButtons: props.actionButtons,
@@ -52,11 +50,17 @@ const TimerCard: React.FC<TimerCardProps> = (props) => {
   });
 
   const handleCardClick = (): void => {
-    if (!isExpired) {
-      if (isRunning) {
-        pause();
-      } else {
-        resume();
+    // If we're in the delete state, delete the card
+    if (props.isDeleting) {
+      props.deleteCard();
+      // Else, handle the card click as pause/play
+    } else {
+      if (!isExpired) {
+        if (isRunning) {
+          pause();
+        } else {
+          resume();
+        }
       }
     }
   };
@@ -82,7 +86,15 @@ const TimerCard: React.FC<TimerCardProps> = (props) => {
   return (
     <>
       <IonCard
-        color={isExpired ? "medium" : isRunning ? "secondary" : "primary"}
+        color={
+          props.isDeleting
+            ? "danger"
+            : isExpired
+            ? "medium"
+            : isRunning
+            ? "secondary"
+            : "primary"
+        }
         onClick={handleCardClick}
         button
         className="timer-card"
@@ -99,7 +111,8 @@ const TimerCard: React.FC<TimerCardProps> = (props) => {
               </IonCol>
               <IonCol size="auto">
                 <IonButton
-                  color="warning"
+                  disabled={props.isDeleting}
+                  color={props.isDeleting ? "dark" : "warning"}
                   fill="solid"
                   id={"open-timer-card-modal" + props.id}
                   onClick={(e: React.MouseEvent) => openEditModal(e)}
@@ -114,8 +127,15 @@ const TimerCard: React.FC<TimerCardProps> = (props) => {
           <IonRow>
             {props.actionButtons.map((button, index) => (
               <IonButton
+                disabled={props.isDeleting}
                 key={index}
-                color={button >= 0 ? "success" : "danger"}
+                color={
+                  props.isDeleting
+                    ? "medium"
+                    : button >= 0
+                    ? "success"
+                    : "danger"
+                }
                 onClick={(e: React.MouseEvent) => handleCardAction(e, index)}
               >
                 <IonIcon
