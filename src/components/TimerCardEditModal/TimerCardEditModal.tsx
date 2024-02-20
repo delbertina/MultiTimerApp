@@ -1,11 +1,14 @@
 import {
+  InputChangeEventDetail,
   IonButton,
   IonButtons,
   IonContent,
   IonFooter,
   IonHeader,
   IonIcon,
+  IonInput,
   IonItem,
+  IonItemDivider,
   IonLabel,
   IonList,
   IonPage,
@@ -16,20 +19,24 @@ import {
   ItemReorderEventDetail,
   useIonModal,
 } from "@ionic/react";
+import "./TimerCardEditModal.scss";
 import { closeOutline } from "ionicons/icons";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import TimerCardAddActionModal from "../TimerCardAddActionModal/TimerCardAddActionModal";
 import TimerCardEditActionModal from "../TimerCardEditActionModal/TimerCardEditActionModal";
 import { OverlayEventDetail } from "@ionic/react/dist/types/components/react-component-lib/interfaces";
 import { MODAL_SAVE_ROLE } from "../../data/constants";
+import { TimerCardData } from "../../types/TimerCard";
 
 export interface TimerCardEditProps {
   buttonTitle: string;
   actionButtons: number[];
-  onDismiss: (data?: number[], role?: string) => void;
+  onDismiss: (data?: TimerCardData, role?: string) => void;
 }
 
 const TimerCardEditModal: React.FC<TimerCardEditProps> = (props) => {
+  const titleRef = useRef<HTMLIonInputElement>(null);
+  const [titleValue ,setTitleValue] = useState<string>(props.buttonTitle);
   const [tempActionButtons, setTempActionButtons] = useState<Array<number>>([
     ...props.actionButtons,
   ]);
@@ -44,7 +51,11 @@ const TimerCardEditModal: React.FC<TimerCardEditProps> = (props) => {
   });
 
   const confirmSaveModal = (): void => {
-    props.onDismiss(tempActionButtons, MODAL_SAVE_ROLE);
+    props.onDismiss({
+      milliseconds: 0, // will be ignored
+      buttonTitle: titleRef.current?.value + "",
+      actionButtons: tempActionButtons
+    }, MODAL_SAVE_ROLE);
   };
 
   const cancelSaveModal = (): void => {
@@ -104,7 +115,7 @@ const TimerCardEditModal: React.FC<TimerCardEditProps> = (props) => {
       <IonHeader>
         <IonToolbar>
           <IonTitle>
-            <strong>Edit Quick Add</strong> :: {props.buttonTitle}
+            <strong>Edit Quick Add</strong> 
           </IonTitle>
           <IonButtons slot="end">
             <IonButton
@@ -122,6 +133,17 @@ const TimerCardEditModal: React.FC<TimerCardEditProps> = (props) => {
         </IonToolbar>
       </IonHeader>
       <IonContent className="ion-padding">
+      <IonInput
+            ref={titleRef}
+            fill="solid"
+            name="title"
+            type="text"
+            clearInput={true}
+            // TODO: Update this usage of type any
+            onIonInput={(e: any) => setTitleValue(e.target.value + "")}
+            value={titleValue}
+          />
+          <IonItemDivider />
         <IonList>
           <IonReorderGroup
             disabled={false}

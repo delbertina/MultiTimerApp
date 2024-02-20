@@ -45,12 +45,14 @@ const Home: React.FC = () => {
     setIsDeleteState(!isDeleteState);
   };
 
-  const handleUpdateActionButtons = (
+  const handleUpdateCard = (
     index: number,
-    buttons: number[]
+    data: TimerCardData
   ): void => {
     const tempButtons = [...timerButtons];
-    tempButtons[index].actionButtons = buttons;
+    tempButtons[index].actionButtons = data.actionButtons;
+    tempButtons[index].buttonTitle = data.buttonTitle;
+    // Ignore the milliseconds attribute
     setTimerButtons(tempButtons);
   };
 
@@ -88,14 +90,13 @@ const Home: React.FC = () => {
         {timerButtons.map((item, index) => (
           <TimerCard
             key={index}
-            id={index}
             buttonTitle={item.buttonTitle}
             actionButtons={item.actionButtons}
-            updateActionButtons={(buttons: number[]) =>
-              handleUpdateActionButtons(index, buttons)
-            }
             isDeleting={isDeleteState}
             deleteCard={() => handleDeleteCard(index)}
+            updateCard={(data: TimerCardData) =>
+              handleUpdateCard(index, data)
+            }
           />
         ))}
       </IonContent>

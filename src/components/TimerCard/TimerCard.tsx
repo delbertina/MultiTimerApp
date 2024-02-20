@@ -16,13 +16,13 @@ import { useTimer } from "react-timer-hook";
 import TimerCardEditModal from "../TimerCardEditModal/TimerCardEditModal";
 import { OverlayEventDetail } from "@ionic/react/dist/types/components/react-component-lib/interfaces";
 import { MODAL_SAVE_ROLE } from "../../data/constants";
+import { TimerCardData } from "../../types/TimerCard";
 
 export interface TimerCardProps {
-  id: number;
   buttonTitle: string;
   actionButtons: number[];
-  updateActionButtons: (buttons: number[]) => void;
   isDeleting: boolean;
+  updateCard: (data: TimerCardData) => void;
   deleteCard: () => void;
 }
 
@@ -77,7 +77,7 @@ const TimerCard: React.FC<TimerCardProps> = (props) => {
     presentEdit({
       onWillDismiss: (ev: CustomEvent<OverlayEventDetail>) => {
         if (ev.detail.role === MODAL_SAVE_ROLE) {
-          props.updateActionButtons(ev.detail.data);
+          props.updateCard(ev.detail.data);
         }
       },
     });
@@ -114,7 +114,6 @@ const TimerCard: React.FC<TimerCardProps> = (props) => {
                   disabled={props.isDeleting}
                   color={props.isDeleting ? "dark" : "warning"}
                   fill="solid"
-                  id={"open-timer-card-modal" + props.id}
                   onClick={(e: React.MouseEvent) => openEditModal(e)}
                 >
                   <IonIcon slot="icon-only" icon={settingsOutline} />

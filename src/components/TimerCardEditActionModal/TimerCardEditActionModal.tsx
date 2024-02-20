@@ -11,7 +11,7 @@ import {
     IonToolbar,
   } from "@ionic/react";
   import { closeOutline } from "ionicons/icons";
-  import { useRef } from "react";
+  import { useRef, useState } from "react";
 import { MODAL_SAVE_ROLE } from "../../data/constants";
   
   const TimerCardEditActionModal = ({
@@ -22,6 +22,7 @@ import { MODAL_SAVE_ROLE } from "../../data/constants";
     onDismiss: (data?: string | null | undefined | number, role?: string) => void;
   }) => {
     const inputRef = useRef<HTMLIonInputElement>(null);
+    const [inputValue ,setInputValue] = useState<string>(defaultValue + "");
   
     return (
       <IonPage className="timer-card-edit-action-modal">
@@ -43,7 +44,9 @@ import { MODAL_SAVE_ROLE } from "../../data/constants";
             fill="solid"
             name="value"
             type="number"
-            placeholder={defaultValue + ""}
+            // TODO: Update this usage of type any
+            onIonInput={(e: any) => setInputValue(e.target.value + "")}
+            value={inputValue}
             min={-300}
             max={300}
           />
