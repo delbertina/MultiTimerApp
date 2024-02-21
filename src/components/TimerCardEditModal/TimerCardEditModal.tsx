@@ -31,6 +31,8 @@ import { TimerCardData } from "../../types/TimerCard";
 export interface TimerCardEditProps {
   buttonTitle: string;
   actionButtons: number[];
+  isDisabled: boolean;
+  enableButton: () => void;
   onDismiss: (data?: TimerCardData, role?: string) => void;
 }
 
@@ -136,6 +138,20 @@ const TimerCardEditModal: React.FC<TimerCardEditProps> = (props) => {
         </IonToolbar>
       </IonHeader>
       <IonContent className="ion-padding">
+        {props.isDisabled && 
+          <>
+            <IonButton
+              fill="solid"
+              color="warning"
+              expand="block"
+              strong={true}
+              onClick={() => props.enableButton()}
+            >
+              ENABLE TIMER BUTTON
+            </IonButton>
+            <IonItemDivider />
+          </>
+        }
         <IonInput
           ref={titleRef}
           fill="solid"

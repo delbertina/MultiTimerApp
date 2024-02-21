@@ -31,6 +31,8 @@ const TimerCard: React.FC<TimerCardProps> = (props) => {
   const [presentEdit, dismissEdit] = useIonModal(TimerCardEditModal, {
     buttonTitle: props.buttonTitle,
     actionButtons: props.actionButtons,
+    isDisabled: isExpired,
+    enableButton: () => setIsExpired(false),
     onDismiss: (data: string, role: string) => dismissEdit(data, role),
   });
 
