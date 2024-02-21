@@ -36,7 +36,7 @@ export interface TimerCardEditProps {
 
 const TimerCardEditModal: React.FC<TimerCardEditProps> = (props) => {
   const titleRef = useRef<HTMLIonInputElement>(null);
-  const [titleValue ,setTitleValue] = useState<string>(props.buttonTitle);
+  const [titleValue, setTitleValue] = useState<string>(props.buttonTitle);
   const [tempActionButtons, setTempActionButtons] = useState<Array<number>>([
     ...props.actionButtons,
   ]);
@@ -51,11 +51,14 @@ const TimerCardEditModal: React.FC<TimerCardEditProps> = (props) => {
   });
 
   const confirmSaveModal = (): void => {
-    props.onDismiss({
-      milliseconds: 0, // will be ignored
-      buttonTitle: titleRef.current?.value + "",
-      actionButtons: tempActionButtons
-    }, MODAL_SAVE_ROLE);
+    props.onDismiss(
+      {
+        milliseconds: 0, // will be ignored
+        buttonTitle: titleRef.current?.value + "",
+        actionButtons: tempActionButtons,
+      },
+      MODAL_SAVE_ROLE
+    );
   };
 
   const cancelSaveModal = (): void => {
@@ -100,7 +103,7 @@ const TimerCardEditModal: React.FC<TimerCardEditProps> = (props) => {
 
   const handleActionRemove = (index: number): void => {
     const tempButtons = tempActionButtons;
-    tempButtons.splice(index, 1)
+    tempButtons.splice(index, 1);
     setTempActionButtons([...tempButtons]);
   };
 
@@ -115,7 +118,7 @@ const TimerCardEditModal: React.FC<TimerCardEditProps> = (props) => {
       <IonHeader>
         <IonToolbar>
           <IonTitle>
-            <strong>Edit Quick Add</strong> 
+            <strong>Edit Quick Add</strong>
           </IonTitle>
           <IonButtons slot="end">
             <IonButton
@@ -133,17 +136,18 @@ const TimerCardEditModal: React.FC<TimerCardEditProps> = (props) => {
         </IonToolbar>
       </IonHeader>
       <IonContent className="ion-padding">
-      <IonInput
-            ref={titleRef}
-            fill="solid"
-            name="title"
-            type="text"
-            clearInput={true}
-            // TODO: Update this usage of type any
-            onIonInput={(e: any) => setTitleValue(e.target.value + "")}
-            value={titleValue}
-          />
-          <IonItemDivider />
+        <IonInput
+          ref={titleRef}
+          fill="solid"
+          name="title"
+          type="text"
+          placeholder="Add a Title..."
+          clearInput={true}
+          // TODO: Update this usage of type any
+          onIonInput={(e: any) => setTitleValue(e.target.value + "")}
+          value={titleValue}
+        />
+        <IonItemDivider />
         <IonList>
           <IonReorderGroup
             disabled={false}

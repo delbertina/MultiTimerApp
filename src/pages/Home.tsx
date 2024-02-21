@@ -18,23 +18,7 @@ import { NEW_TIMER_CARD } from "../data/constants";
 const Home: React.FC = () => {
   const [isDeleteState, setIsDeleteState] = useState<boolean>(false);
   const [timerButtons, setTimerButtons] = useState<TimerCardData[]>([
-    {
-      milliseconds: 1000,
-      buttonTitle: "Red Team",
-      actionButtons: [30, -45, 0, 5],
-    },
-    {
-      milliseconds: 2000,
-      buttonTitle: "Blue Team",
-      actionButtons: [30],
-    },
-    {
-      milliseconds: 3000,
-      buttonTitle: "Yellow Team really long title that is long",
-      actionButtons: [
-        30, -45, 0, 5, 30, -45, 0, 5, 30, -45, 0, 5, 30, -45, 0, 5,
-      ],
-    },
+    NEW_TIMER_CARD,
   ]);
 
   const handleAddCard = (): void => {
@@ -45,10 +29,7 @@ const Home: React.FC = () => {
     setIsDeleteState(!isDeleteState);
   };
 
-  const handleUpdateCard = (
-    index: number,
-    data: TimerCardData
-  ): void => {
+  const handleUpdateCard = (index: number, data: TimerCardData): void => {
     const tempButtons = [...timerButtons];
     tempButtons[index].actionButtons = data.actionButtons;
     tempButtons[index].buttonTitle = data.buttonTitle;
@@ -58,9 +39,9 @@ const Home: React.FC = () => {
 
   const handleDeleteCard = (index: number): void => {
     const tempButtons = timerButtons;
-    tempButtons.splice(index, 1)
+    tempButtons.splice(index, 1);
     setTimerButtons([...tempButtons]);
-  }
+  };
 
   return (
     <IonPage>
@@ -94,9 +75,7 @@ const Home: React.FC = () => {
             actionButtons={item.actionButtons}
             isDeleting={isDeleteState}
             deleteCard={() => handleDeleteCard(index)}
-            updateCard={(data: TimerCardData) =>
-              handleUpdateCard(index, data)
-            }
+            updateCard={(data: TimerCardData) => handleUpdateCard(index, data)}
           />
         ))}
       </IonContent>

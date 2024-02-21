@@ -107,7 +107,7 @@ const TimerCard: React.FC<TimerCardProps> = (props) => {
                   <span>{("00" + minutes).slice(-2)}</span>:
                   <span>{("00" + seconds).slice(-2)}</span>
                 </strong>{" "}
-                :: {props.buttonTitle}
+                {props.buttonTitle ? " :: " + props.buttonTitle : ""}
               </IonCol>
               <IonCol size="auto">
                 <IonButton

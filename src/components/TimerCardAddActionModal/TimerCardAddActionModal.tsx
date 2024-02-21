@@ -14,11 +14,11 @@ import { closeOutline } from "ionicons/icons";
 import { useRef } from "react";
 import { MODAL_SAVE_ROLE } from "../../data/constants";
 
-const TimerCardAddActionModal = ({
-  onDismiss,
-}: {
+export interface TimerCardAddActionModalProps {
   onDismiss: (data?: string | null | undefined | number, role?: string) => void;
-}) => {
+}
+
+const TimerCardAddActionModal = (props: TimerCardAddActionModalProps) => {
   const inputRef = useRef<HTMLIonInputElement>(null);
 
   return (
@@ -29,7 +29,7 @@ const TimerCardAddActionModal = ({
             <strong>Add Quick Action</strong>
           </IonTitle>
           <IonButtons slot="end">
-            <IonButton onClick={() => onDismiss(null, "cancel")}>
+            <IonButton onClick={() => props.onDismiss(null, "cancel")}>
               <IonIcon color="danger" icon={closeOutline} />
             </IonButton>
           </IonButtons>
@@ -53,7 +53,9 @@ const TimerCardAddActionModal = ({
             color="success"
             fill="solid"
             expand="block"
-            onClick={() => onDismiss(inputRef.current?.value, MODAL_SAVE_ROLE)}
+            onClick={() =>
+              props.onDismiss(inputRef.current?.value, MODAL_SAVE_ROLE)
+            }
           >
             Submit
           </IonButton>
