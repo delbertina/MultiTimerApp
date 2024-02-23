@@ -12,17 +12,16 @@ import "./Home.scss";
 import TimerCard from "../components/TimerCard/TimerCard";
 import { addOutline, trashOutline } from "ionicons/icons";
 import { useState } from "react";
-import { TimerCardData } from "../types/TimerCard";
-import { NEW_TIMER_CARD } from "../data/constants";
+import { NewTimerCard, TimerCardData } from "../types/TimerCard";
 
 const Home: React.FC = () => {
   const [isDeleteState, setIsDeleteState] = useState<boolean>(false);
   const [timerButtons, setTimerButtons] = useState<TimerCardData[]>([
-    NEW_TIMER_CARD,
+    new NewTimerCard,
   ]);
 
   const handleAddCard = (): void => {
-    setTimerButtons([...timerButtons, NEW_TIMER_CARD]);
+    setTimerButtons([...timerButtons, new NewTimerCard]);
   };
 
   const handleToggleDeleteMode = (): void => {
