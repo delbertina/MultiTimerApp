@@ -1,8 +1,8 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'io.ionic.starter',
-  appName: 'multi-timer-app',
+  appId: 'com.delbertina.multi-timer-app',
+  appName: 'Multi Timer App',
   webDir: 'dist',
   server: {
     androidScheme: 'https'
