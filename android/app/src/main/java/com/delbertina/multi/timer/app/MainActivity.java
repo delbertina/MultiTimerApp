@@ -1,4 +1,4 @@
-package io.ionic.starter;
+package com.delbertina.multi.timer.app;
 
 import com.getcapacitor.BridgeActivity;
 
